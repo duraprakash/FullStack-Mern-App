@@ -15,3 +15,13 @@
     PORT=3001
 
     Note: ==> replace username and password with your mongodb username and password
+
+    run ==> nmp start [ at this time  your mongodb should be connected to port: 3001 or 6001 ]
+
+ 07. create a separate model folder where your models are kept -> User.js [model]
+ 08. create an auth.js under controllers folder
+ 09. create a separate public\assets folder to store you images
+ 10. create a front-end UI [not done]
+ 11. edit index.js [entry point]]
+ 12. create a separate routes folder and add auth.js file [route]
+ 13. create a separate middleware folder and add auth.js file [token]

@@ -8,8 +8,11 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import authRoutes from "./routes/auth.js"; // import auth.js from route folder [routing part]
+import { register } from "./controllers/auth.js"; // import auth.js from controller folder [CRUD & validation part]
+import { verifyToken } from "./middleware/auth.js"; // import auth.js from middleware folder [token part]
 
-/* CONFIGURATION */
+/** CONFIGURATION */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
@@ -23,7 +26,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
-/* FILE STORAGE */
+/** FILE STORAGE */
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/assets");
@@ -34,8 +37,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-/* MONGOOSE SETUP */
-const PORT = process.env.PORT || 6001;
+/** ROUTE WITH FILES */
+app.post("/auth/register", upload.single("picture"), register); // this one is not placed inside routes because upload must be globally accessable any time
+
+/** ROUTES */
+app.use("/auth", authRoutes); // routes for all routes /auth will be prefix for all
+
+/** MONGOOSE SETUP */
+const PORT = process.env.PORT || 6001; // TODO: Note 1 ==> PORT & MONGO_URL values are kept in .env file
 mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -45,7 +54,7 @@ mongoose
   .then(() => {
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
-    /* ADD DATA ONE TIME */
+    /** ADD DATA ONE TIME */
     // User.insertMany(users);
     // Post.insertMany(posts);
   })
